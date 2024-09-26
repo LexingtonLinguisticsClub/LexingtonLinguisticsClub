@@ -1,135 +1,128 @@
-// script.js
-
-// Existing function for responsive navigation menu
 function toggleMenu() {
     var x = document.getElementById("navbar");
-    if (x.className === "") {
+    if (x.className === "navbar") {
         x.className += " responsive";
     } else {
-        x.className = "";
+        x.className = "navbar";
     }
 }
 
-// Variables for pagination and data storage
 let currentPage = 1;
-const questionsPerPage = 10;
+const itemsPerPage = 10;
+let totalPages = 0;
 let questionsData = [];
 
-// Function to load questions from the JSON file
-function loadQuestions() {
+function init() {
     fetch('questions.json')
         .then(response => response.json())
         .then(data => {
             questionsData = data;
-            displayQuestions();
+            totalPages = Math.ceil(questionsData.length / itemsPerPage);
+            displayQuestions(currentPage);
+            setupPagination();
         })
-        .catch(error => console.error('Error fetching questions:', error));
+        .catch(error => {
+            console.error('Error loading questions:', error);
+        });
 }
 
-// Function to display questions on the page
-function displayQuestions(filteredData) {
+function displayQuestions(page) {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentItems = questionsData.slice(startIndex, endIndex);
+
     const container = document.getElementById('questions-container');
-    if (!container) return; // Exit if container is not found
-    container.innerHTML = ''; // Clear existing content
+    container.innerHTML = '';
 
-    const dataToDisplay = filteredData || questionsData.slice((currentPage - 1) * questionsPerPage, currentPage * questionsPerPage);
-
-    dataToDisplay.forEach(question => {
-        // Create elements
-        const questionCard = document.createElement('div');
-        questionCard.className = 'question-card';
-
-        const date = document.createElement('h3');
-        date.textContent = `Date: ${question.date}`;
+    currentItems.forEach((item, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question-item');
 
         const questionText = document.createElement('p');
-        questionText.textContent = question.question;
+        questionText.classList.add('question-text');
+        questionText.innerHTML = `<strong>Date:</strong> ${item.date} - <strong>Question:</strong> ${item.question}`;
 
-        // Optionally display the answer
-        if (question.answer) {
-            const answerText = document.createElement('p');
-            answerText.innerHTML = `<strong>Answer:</strong> ${question.answer}`;
-            answerText.style.display = 'none'; // Hide by default
+        const answerText = document.createElement('p');
+        answerText.classList.add('answer-text');
+        answerText.innerHTML = `<strong>Answer:</strong> ${item.answer}`;
 
-            // Add a button to toggle the answer
-            const toggleButton = document.createElement('button');
-            toggleButton.textContent = 'Show Answer';
-            toggleButton.onclick = () => {
-                if (answerText.style.display === 'none') {
-                    answerText.style.display = 'block';
-                    toggleButton.textContent = 'Hide Answer';
-                } else {
-                    answerText.style.display = 'none';
-                    toggleButton.textContent = 'Show Answer';
-                }
-            };
+        questionText.addEventListener('click', () => {
+            if (answerText.style.display === 'none' || answerText.style.display === '') {
+                answerText.style.display = 'block';
+            } else {
+                answerText.style.display = 'none';
+            }
+        });
 
-            // Append elements
-            questionCard.appendChild(date);
-            questionCard.appendChild(questionText);
-            questionCard.appendChild(toggleButton);
-            questionCard.appendChild(answerText);
-        } else {
-            // Append elements without answer
-            questionCard.appendChild(date);
-            questionCard.appendChild(questionText);
+        questionDiv.appendChild(questionText);
+        questionDiv.appendChild(answerText);
+
+        container.appendChild(questionDiv);
+    });
+}
+
+function setupPagination() {
+    const paginationContainer = document.getElementById('pagination');
+    paginationContainer.innerHTML = '';
+
+    const maxVisiblePages = 5;
+
+    const prevButton = document.createElement('button');
+    prevButton.innerText = 'Previous';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => {
+        currentPage--;
+        updatePagination();
+    });
+    paginationContainer.appendChild(prevButton);
+
+    let pageNumbers = [];
+
+    if (totalPages <= maxVisiblePages) {
+        for (let i = 1; i <= totalPages; i++) {
+            pageNumbers.push(i);
         }
+    } else {
+        if (currentPage <= 3) {
+            pageNumbers = [1, 2, 3, '...', totalPages];
+        } else if (currentPage >= totalPages - 2) {
+            pageNumbers = [1, '...', totalPages - 2, totalPages - 1, totalPages];
+        } else {
+            pageNumbers = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+        }
+    }
 
-        container.appendChild(questionCard);
+    pageNumbers.forEach(page => {
+        if (page === '...') {
+            const dots = document.createElement('span');
+            dots.innerText = '...';
+            paginationContainer.appendChild(dots);
+        } else {
+            const pageButton = document.createElement('button');
+            pageButton.innerText = page;
+            if (page === currentPage) pageButton.classList.add('active');
+            pageButton.addEventListener('click', () => {
+                currentPage = page;
+                updatePagination();
+            });
+            paginationContainer.appendChild(pageButton);
+        }
     });
 
-    // Display pagination controls if not searching
-    if (!filteredData) {
-        displayPaginationControls();
-    }
+    const nextButton = document.createElement('button');
+    nextButton.innerText = 'Next';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => {
+        currentPage++;
+        updatePagination();
+    });
+    paginationContainer.appendChild(nextButton);
 }
 
-// Function to display pagination controls
-function displayPaginationControls() {
-    const container = document.getElementById('questions-container');
-    if (!container) return;
-    const totalPages = Math.ceil(questionsData.length / questionsPerPage);
-
-    const paginationDiv = document.createElement('div');
-    paginationDiv.className = 'pagination';
-
-    // Previous button
-    if (currentPage > 1) {
-        const prevButton = document.createElement('button');
-        prevButton.textContent = 'Previous';
-        prevButton.onclick = () => {
-            currentPage--;
-            displayQuestions();
-        };
-        paginationDiv.appendChild(prevButton);
-    }
-
-    // Next button
-    if (currentPage < totalPages) {
-        const nextButton = document.createElement('button');
-        nextButton.textContent = 'Next';
-        nextButton.onclick = () => {
-            currentPage++;
-            displayQuestions();
-        };
-        paginationDiv.appendChild(nextButton);
-    }
-
-    container.appendChild(paginationDiv);
+function updatePagination() {
+    displayQuestions(currentPage);
+    setupPagination();
+    window.scrollTo(0, 0);
 }
 
-// Function for searching questions
-function searchQuestions() {
-    const query = document.getElementById('search-input').value.toLowerCase();
-    const filteredQuestions = questionsData.filter(question =>
-        question.question.toLowerCase().includes(query)
-    );
-    displayQuestions(filteredQuestions);
-}
-
-// Load questions when the page loads, only if on the questions page
-window.onload = function() {
-    if (document.getElementById('questions-container')) {
-        loadQuestions();
-    }
-};
+window.onload = init;
