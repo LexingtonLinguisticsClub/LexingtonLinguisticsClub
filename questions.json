@@ -263,8 +263,7 @@
         "date": "2024-08-05",
         "question": "What is the term for a language that serves as a common means of communication for speakers of different native languages?",
         "answer": "Lingua franca"
-    }
-
+    },
     {
         "date": "2024-08-04",
         "question": "What is the term for a linguistic phenomenon where a sound changes due to the influence of a neighboring sound?",
@@ -514,8 +513,7 @@
         "date": "2024-06-16",
         "question": "What is the term for a word or phrase that is avoided in speech due to social or cultural prohibitions?",
         "answer": "Taboo"
-    }
-
+    },
     {
         "date": "2024-06-15",
         "question": "Which language is known for its use of the Cyrillic script and is the official language of Bulgaria?",
@@ -1020,8 +1018,7 @@
         "date": "2024-03-07",
         "question": "What is the term for a word or phrase that reads the same backward as forward?",
         "answer": "Palindrome"
-    }
-
+    },
     {
         "date": "2024-03-06",
         "question": "Which language is the official language of Bangladesh and has a rich literary heritage?",
@@ -1531,7 +1528,7 @@
         "date": "2023-11-26",
         "question": "What is the term for a language used for communication between groups with no native speakers?",
         "answer": "Auxiliary language"
-    }
+    },
     {
         "date": "2023-11-25",
         "question": "Which language is the official language of Israel and was revived from a liturgical language?",
@@ -2283,5 +2280,3 @@
         "answer": "Preposition"
     }
 ]
-
-
