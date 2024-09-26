@@ -1,40 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Question of the Day - Lexington Linguistics Club</title>
-    <link rel="stylesheet" href="styles.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions</title>
+    <style>
+   
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .question-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+      
+        #pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        #pagination button {
+            margin: 0 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        #pagination button.active {
+            background-color: #007bff;
+            color: white;
+        }
+        #pagination button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #pagination span {
+            margin: 0 5px;
+            padding: 8px 12px;
+        }
+    </style>
 </head>
 <body>
-
-<header>
-    <div class="logo">
-        <h1>Lexington Linguistics Club</h1>
-        <p>Unlocking the Power of Language in Lexington</p>
+    <div id="questions-container">
+     
     </div>
-    <nav id="navbar">
-        <a href="index.html">Home</a>
-        <a href="team.html">Meet Our Team</a>
-        <a href="questions.html">Question of the Day</a>
-        <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">&#9776;</a>
-    </nav>
-</header>
 
-<main>
-    <section>
-        <h2>Question of the Day</h2>
-        <input type="text" id="search-input" placeholder="Search questions..." onkeyup="searchQuestions()">
-        <div id="questions-container">
-            <!-- Questions injected here  -->
-        </div>
-    </section>
-</main>
+    <div id="pagination">
+     
+    </div>
 
-<footer>
-    &copy; 2024 Lexington Linguistics Club
-</footer>
+    <script>
+        
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let totalPages = 0;
+        let questionsData = [];
 
-<script src="script.js"></script>
+        function init() {
+            fetch('questions.json')
+                .then(response => response.json())
+                .then(data => {
+                    questionsData = data;
+                    totalPages = Math.ceil(questionsData.length / itemsPerPage);
+                    displayQuestions(currentPage);
+                    setupPagination();
+                })
+                .catch(error => {
+                    console.error('Error loading questions:', error);
+                });
+        }
+
+        function displayQuestions(page) {
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const currentItems = questionsData.slice(startIndex, endIndex);
+
+            const container = document.getElementById('questions-container');
+            container.innerHTML = ''; // Clear previous content
+
+            currentItems.forEach(item => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question-item');
+                questionDiv.innerHTML = `
+                    <p><strong>Date:</strong> ${item.date}</p>
+                    <p><strong>Question:</strong> ${item.question}</p>
+                    <p><strong>Answer:</strong> ${item.answer}</p>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function setupPagination() {
+            const paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = '';
+
+            const maxVisiblePages = 5;
+
+          
+            const prevButton = document.createElement('button');
+            prevButton.innerText = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', () => {
+                currentPage--;
+                updatePagination();
+            });
+            paginationContainer.appendChild(prevButton);
+
+          
+            let pageNumbers = [];
+
+            if (totalPages <= maxVisiblePages) {
+                for (let i = 1; i <= totalPages; i++) {
+                    pageNumbers.push(i);
+                }
+            } else {
+                if (currentPage <= 3) {
+                    pageNumbers = [1, 2, 3, '...', totalPages];
+                } else if (currentPage >= totalPages - 2) {
+                    pageNumbers = [1, '...', totalPages - 2, totalPages - 1, totalPages];
+                } else {
+                    pageNumbers = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+                }
+            }
+
+            pageNumbers.forEach(page => {
+                if (page === '...') {
+                    const dots = document.createElement('span');
+                    dots.innerText = '...';
+                    paginationContainer.appendChild(dots);
+                } else {
+                    const pageButton = document.createElement('button');
+                    pageButton.innerText = page;
+                    if (page === currentPage) pageButton.classList.add('active');
+                    pageButton.addEventListener('click', () => {
+                        currentPage = page;
+                        updatePagination();
+                    });
+                    paginationContainer.appendChild(pageButton);
+                }
+            });
+
+            
+            const nextButton = document.createElement('button');
+            nextButton.innerText = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener('click', () => {
+                currentPage++;
+                updatePagination();
+            });
+            paginationContainer.appendChild(nextButton);
+        }
+
+        function updatePagination() {
+            displayQuestions(currentPage);
+            setupPagination();
+            window.scrollTo(0, 0); 
+        }
+
+        window.onload = init;
+    </script>
 </body>
 </html>
