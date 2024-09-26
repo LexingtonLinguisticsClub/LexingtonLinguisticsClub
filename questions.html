@@ -16,7 +16,7 @@
     <nav id="navbar">
         <a href="index.html">Home</a>
         <a href="team.html">Meet Our Team</a>
-        <a href="questions.html" class="active">Question of the Day</a> 
+        <a href="questions.html">Question of the Day</a>
         <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">&#9776;</a>
     </nav>
 </header>
@@ -24,8 +24,10 @@
 <main>
     <section>
         <h2>Question of the Day</h2>
-        <div id="questions-container"></div>
-        <div id="pagination"></div>
+        <input type="text" id="search-input" placeholder="Search questions..." onkeyup="searchQuestions()">
+        <div id="questions-container">
+            <!-- Questions injected here  -->
+        </div>
     </section>
 </main>
 
