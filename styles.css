@@ -1,3 +1,5 @@
+
+
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
@@ -91,7 +93,9 @@ footer {
 
 /* Responsive Styles */
 @media screen and (max-width: 768px) {
-    nav a:not(:first-child) {display: none;}
+    nav a:not(:first-child) {
+        display: none;
+    }
     nav a.icon {
         float: right;
         display: block;
@@ -103,7 +107,9 @@ footer {
 }
 
 @media screen and (max-width: 768px) {
-    nav.responsive {position: relative;}
+    nav.responsive {
+        position: relative;
+    }
     nav.responsive a.icon {
         position: absolute;
         right: 0;
@@ -115,14 +121,75 @@ footer {
         text-align: left;
     }
 }
+
 /* Styles for President and Founder */
 .president-name {
-    font-size: 1.6em; 
+    font-size: 1.6em;
     font-weight: bold;
 }
 
 .position-title {
-    font-size: 1.4em; 
-    font-weight: bold; 
+    font-size: 1.4em;
+    font-weight: bold;
 }
 
+/* Styles for Question of the Day */
+.question-card {
+    border: 1px solid #4B0082;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.question-card h3 {
+    color: #4B0082;
+    margin-top: 0;
+}
+
+.question-card p {
+    margin: 10px 0;
+}
+
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    background-color: #4B0082;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.pagination button:hover {
+    background-color: #371a6d;
+}
+
+/* Search Input */
+#search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #4B0082;
+    border-radius: 5px;
+}
+
+/* Toggle Answer Button */
+.question-card button {
+    background-color: #4B0082;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.question-card button:hover {
+    background-color: #371a6d;
+}
