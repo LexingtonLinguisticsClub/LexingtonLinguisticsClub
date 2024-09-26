@@ -2,53 +2,100 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Questions</title>
+    <title>Question of the Day</title>
     <style>
-   
+         
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
+      
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+            margin-bottom: 20px;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        
         .question-item {
             border-bottom: 1px solid #ccc;
             padding: 10px 0;
         }
-      
+
+        .question-text {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding-left: 20px;
+        }
+ 
         #pagination {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
+
         #pagination button {
             margin: 0 5px;
             padding: 8px 12px;
             cursor: pointer;
         }
+
         #pagination button.active {
             background-color: #007bff;
             color: white;
         }
+
         #pagination button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
+
         #pagination span {
             margin: 0 5px;
             padding: 8px 12px;
         }
+
     </style>
 </head>
 <body>
+  
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="team.html">Meet Our Team</a>
+        <a href="questions.html">Question of the Day</a>
+         
+    </div>
+ 
     <div id="questions-container">
      
     </div>
 
+ 
     <div id="pagination">
-     
+       
     </div>
 
     <script>
-        
+         
         let currentPage = 1;
         const itemsPerPage = 10;
         let totalPages = 0;
@@ -74,16 +121,32 @@
             const currentItems = questionsData.slice(startIndex, endIndex);
 
             const container = document.getElementById('questions-container');
-            container.innerHTML = ''; // Clear previous content
+            container.innerHTML = '';  
 
-            currentItems.forEach(item => {
+            currentItems.forEach((item, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.classList.add('question-item');
-                questionDiv.innerHTML = `
-                    <p><strong>Date:</strong> ${item.date}</p>
-                    <p><strong>Question:</strong> ${item.question}</p>
-                    <p><strong>Answer:</strong> ${item.answer}</p>
-                `;
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('question-text');
+                questionText.innerHTML = `<strong>Date:</strong> ${item.date} - <strong>Question:</strong> ${item.question}`;
+
+                const answerText = document.createElement('p');
+                answerText.classList.add('answer-text');
+                answerText.innerHTML = `<strong>Answer:</strong> ${item.answer}`;
+
+            
+                questionText.addEventListener('click', () => {
+                    if (answerText.style.display === 'none') {
+                        answerText.style.display = 'block';
+                    } else {
+                        answerText.style.display = 'none';
+                    }
+                });
+
+                questionDiv.appendChild(questionText);
+                questionDiv.appendChild(answerText);
+
                 container.appendChild(questionDiv);
             });
         }
@@ -94,7 +157,7 @@
 
             const maxVisiblePages = 5;
 
-          
+           
             const prevButton = document.createElement('button');
             prevButton.innerText = 'Previous';
             prevButton.disabled = currentPage === 1;
@@ -104,7 +167,7 @@
             });
             paginationContainer.appendChild(prevButton);
 
-          
+            
             let pageNumbers = [];
 
             if (totalPages <= maxVisiblePages) {
@@ -138,7 +201,7 @@
                 }
             });
 
-            
+         
             const nextButton = document.createElement('button');
             nextButton.innerText = 'Next';
             nextButton.disabled = currentPage === totalPages;
@@ -152,7 +215,7 @@
         function updatePagination() {
             displayQuestions(currentPage);
             setupPagination();
-            window.scrollTo(0, 0); 
+            window.scrollTo(0, 0);  
         }
 
         window.onload = init;
