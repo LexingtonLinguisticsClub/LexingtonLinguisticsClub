@@ -115,3 +115,14 @@ footer {
         text-align: left;
     }
 }
+/* Styles for President and Founder */
+.president-name {
+    font-size: 1.6em; 
+    font-weight: bold;
+}
+
+.position-title {
+    font-size: 1.4em; 
+    font-weight: bold; 
+}
+
